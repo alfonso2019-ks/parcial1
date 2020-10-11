@@ -15,33 +15,33 @@ class _HomePageState extends State<HomePage> {
   final text = TextEditingController();
   Asignatura asignatura = new Asignatura(codigo: null, nombre: null);
 
-List<Asignatura> asignaturas = [];
+  List<Asignatura> asignaturas = [];
   @override
   void initState() {
     text.text = '4';
     super.initState();
-    final res = GetStorage().read("asignaturas")??null;
-    if(res != null){
+    final res = GetStorage().read("asignaturas") ?? null;
+    if (res != null) {
       final a = jsonDecode(res);
-      asignaturas = (a as List).map((asignatura)=>Asignatura.fromJson(asignatura)).toList();
+      asignaturas = (a as List).map((asignatura) => Asignatura.fromJson(asignatura)).toList();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    String nota;
     final _formKey = GlobalKey<FormState>();
     return DefaultTabController(
         length: 4,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Home'),
+            title: Text('Asignaturas'),
           ),
-          bottomNavigationBar: TabBar(tabs: [
-            Icon(Icons.power_input),
-            Icon(Icons.people),
-            Icon(Icons.access_time),
+          bottomNavigationBar: TabBar(labelColor: Colors.green, tabs: [
+            Icon(
+              Icons.power_input,
+            ),
+            Icon(Icons.book),
+            Icon(Icons.check),
             Icon(Icons.access_time),
           ]),
           body: TabBarView(children: [
@@ -49,8 +49,10 @@ List<Asignatura> asignaturas = [];
               child: ListView.builder(
                   itemCount: asignaturas.length,
                   itemBuilder: (context, i) {
+                    print(asignaturas[i].nombre);
                     return ListTile(
                       title: Text(asignaturas[i].nombre),
+                      subtitle: Text(asignaturas[i].codigo),
                     );
                   }),
             ),
@@ -60,12 +62,12 @@ List<Asignatura> asignaturas = [];
                   child: Column(
                     children: [
                       TextFormField(
-                        controller: text,
                         decoration: InputDecoration(labelText: 'Codigo'),
                         onChanged: (value) {
-                          setState(() {
-                            asignatura.codigo = value;
-                          });
+                          // setState(() {
+                          //   asignatura.codigo = value;
+                          // });
+                          asignatura.codigo = value;
                         },
                         validator: (value) {
                           //int number = int.parse(value);
@@ -81,30 +83,28 @@ List<Asignatura> asignaturas = [];
                       TextFormField(
                         decoration: InputDecoration(labelText: 'Nombre'),
                         onChanged: (value) {
-                          setState(() {
-                            asignatura.nombre = value;
-                          });
+                          // setState(() {});
+                          print(value);
+                          asignatura.nombre = value;
                         },
-                        validator: (value) {
-                          //int number = int.parse(value);
-                          if (value.isEmpty) {
-                            return 'Por favor ingresa un valor';
-                          }
-                          // if (number < 0 || number > 5) {
-                          //   return 'Debe ingresar un valor entre 0 y 5';
-                          // }
-                          return null;
-                        },
+                        // validator: (value) {
+                        //   //int number = int.parse(value);
+                        //   if (value.isEmpty) {
+                        //     return 'Por favor ingresa un valor';
+                        //   }
+                        //   // if (number < 0 || number > 5) {
+                        //   //   return 'Debe ingresar un valor entre 0 y 5';
+                        //   // }
+                        //   return null;
+                        // },
                       ),
                       RaisedButton(
                           child: Text('Guardar'),
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              setState(() {
-                                
-                              });
+                              setState(() {});
                               asignaturas.add(asignatura);
-                              GetStorage().write("asignaturas", jsonEncode(asignaturas.map((asignatura)=>asignatura.toJson()).toList()));
+                              GetStorage().write("asignaturas", jsonEncode(asignaturas.map((asignatura) => asignatura.toJson()).toList()));
                             }
                           })
                     ],
@@ -115,6 +115,7 @@ List<Asignatura> asignaturas = [];
                 child: Text('Segundo tab'),
               ),
             ),
+            Container()
           ]),
         ));
   }
